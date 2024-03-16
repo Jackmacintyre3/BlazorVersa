@@ -1,0 +1,36 @@
+﻿@page "/"
+@using BlazorVersa.Data
+@inject FirebaseService FirebaseService
+
+<h3>Speedtest Results</h3>
+
+@if (string.IsNullOrEmpty(speedtestResultsJson))
+{
+    <p>Loading...</p>
+}
+else if (errorOccured)
+{
+    <p>Error occurred while fetching data.</p>
+}
+else
+{
+    <pre>@speedtestResultsJson</pre>
+}
+
+@code {
+    private string speedtestResultsJson;
+    private bool errorOccured = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            speedtestResultsJson = await FirebaseService.GetSpeedtestResultsJsonAsync();
+        }
+        catch (Exception ex)
+        {
+            errorOccured = true;
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
