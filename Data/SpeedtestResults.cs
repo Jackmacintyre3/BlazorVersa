@@ -2,9 +2,9 @@
 {
     public class SpeedtestResults
     {
-        public string UploadSpeed { get; set; }
-        public string DownloadSpeed { get; set; }
-        public string PingSpeed { get; set; }
+        public double UploadSpeed { get; set; }
+        public double DownloadSpeed { get; set; }
+        public int PingSpeed { get; set; }
         public DateTime Timestamp { get; set; }
     }
 }
