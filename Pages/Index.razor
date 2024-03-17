@@ -4,33 +4,13 @@
 
 <h3>Speedtest</h3>
 
-@if (speedtestResults != null)
+@if (!string.IsNullOrEmpty(speedtestResultsJson))
 {
-    <div>
-        <label>Upload Speed:</label>
-        <span>@speedtestResults.UploadSpeed Mbps</span>
-    </div>
-    <div>
-        <label>Download Speed:</label>
-        <span>@speedtestResults.DownloadSpeed Mbps</span>
-    </div>
-    <div>
-        <label>Ping Speed:</label>
-        <span>@speedtestResults.PingSpeed ms</span>
-    </div>
-    <div>
-        <label>Timestamp:</label>
-        <span>@speedtestResults.Timestamp</span>
-    </div>
+    <pre>@speedtestResultsJson</pre>
 }
-else if (errorFetchingData)
+else if (!string.IsNullOrEmpty(errorMessage))
 {
-    <p>Error occurred while fetching data from Firebase.</p>
-}
-else if (errorParsingData)
-{
-    <p>Error occurred while parsing data.</p>
-    <p>JSON Data Received: @speedtestResultsJson</p>
+    <p>Error occurred: @errorMessage</p>
 }
 else
 {
@@ -38,105 +18,18 @@ else
 }
 
 @code {
-    private SpeedtestResults speedtestResults;
     private string speedtestResultsJson;
-    private bool errorFetchingData = false;
-    private bool errorParsingData = false;
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
             speedtestResultsJson = await FirebaseService.GetSpeedtestResultsJsonAsync();
-            if (!string.IsNullOrEmpty(speedtestResultsJson))
-            {
-                var parsedData = ParseSpeedtestResults(speedtestResultsJson);
-                if (parsedData != null)
-                {
-                    speedtestResults = new SpeedtestResults
-                        {
-                            UploadSpeed = ParseDouble(parsedData, "upload_speed"),
-                            DownloadSpeed = ParseDouble(parsedData, "download_speed"),
-                            PingSpeed = ParseInt(parsedData, "ping_speed"),
-                            Timestamp = ParseDateTime(parsedData, "timestamp")
-                        };
-                }
-                else
-                {
-                    errorParsingData = true;
-                    Console.WriteLine("Failed to parse JSON data.");
-                }
-            }
-            else
-            {
-                errorFetchingData = true;
-                Console.WriteLine("Received empty JSON data from Firebase.");
-            }
         }
         catch (Exception ex)
         {
-            errorFetchingData = true;
-            Console.WriteLine($"Error fetching data from Firebase: {ex.Message}");
+            errorMessage = ex.Message;
         }
     }
-
-    private double ParseDouble(Dictionary<string, string> data, string key)
-    {
-        if (data != null && data.ContainsKey(key) && double.TryParse(data[key], out double result))
-        {
-            return result;
-        }
-        else
-        {
-            return 0.0;
-        }
-    }
-
-    private int ParseInt(Dictionary<string, string> data, string key)
-    {
-        if (data != null && data.ContainsKey(key) && int.TryParse(data[key], out int result))
-        {
-            return result;
-        }
-        else
-        {
-            return 0;
-        }
-    }
-
-    private DateTime ParseDateTime(Dictionary<string, string> data, string key)
-    {
-        if (data != null && data.ContainsKey(key) && DateTime.TryParse(data[key], out DateTime result))
-        {
-            return result;
-        }
-        else
-        {
-            return DateTime.MinValue;
-        }
-    }
-
-    private Dictionary<string, string> ParseSpeedtestResults(string speedtestResultsJson)
-{
-    try
-    {
-        var jsonObject = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(speedtestResultsJson);
-        if (jsonObject != null)
-        {
-            return jsonObject;
-        }
-        else
-        {
-            errorParsingData = true;
-            Console.WriteLine("Received empty JSON object from Firebase.");
-            return null;
-        }
-    }
-    catch (Exception ex)
-    {
-        errorParsingData = true;
-        Console.WriteLine($"Error parsing JSON data: {ex.Message}");
-        return null;
-    }
-}
 }
