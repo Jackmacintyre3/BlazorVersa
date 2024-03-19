@@ -37,6 +37,8 @@ namespace BlazorVersa
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddSingleton<FirebaseService>();
 
+
+
             return builder.Build();
         }
     }

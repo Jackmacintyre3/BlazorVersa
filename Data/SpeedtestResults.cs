@@ -4,9 +4,9 @@ namespace BlazorVersa.Data
 {
     public class SpeedtestResults
     {
-        public double UploadSpeed { get; set; }
-        public double DownloadSpeed { get; set; }
-        public double PingSpeed { get; set; }
-        public DateTime Timestamp { get; set; }
+        public DateTime timestamp { get; set; }
+        public string upload_speed { get; set; }
+        public string download_speed { get; set; }
+        public string ping_speed { get; set; }
     }
 }

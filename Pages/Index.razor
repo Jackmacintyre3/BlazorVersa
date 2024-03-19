@@ -2,11 +2,19 @@
 @using BlazorVersa.Data
 @inject FirebaseService FirebaseService
 
-<h3>Speedtest</h3>
+<h3>Speedtest Results</h3>
 
-@if (!string.IsNullOrEmpty(speedtestResultsJson))
+@if (speedtestResults != null && speedtestResults.Count > 0)
 {
-    <pre>@speedtestResultsJson</pre>
+    @foreach (var result in speedtestResults)
+    {
+        <div>
+            <p>Upload Speed: @result.upload_speed</p>
+            <p>Download Speed: @result.download_speed</p>
+            <p>Ping Speed: @result.ping_speed</p>
+            <p>Timestamp: @result.timestamp</p>
+        </div>
+    }
 }
 else if (!string.IsNullOrEmpty(errorMessage))
 {
@@ -14,22 +22,54 @@ else if (!string.IsNullOrEmpty(errorMessage))
 }
 else
 {
-    <p>Loading...</p>
+    <p>No speedtest results found.</p>
+}
+
+@if (!string.IsNullOrEmpty(rawJson))
+{
+    <h4>Raw JSON Data</h4>
+    <pre>@rawJson</pre>
 }
 
 @code {
-    private string speedtestResultsJson;
+    private List<SpeedtestResults> speedtestResults;
+
     private string errorMessage;
+    private string rawJson;
 
     protected override async Task OnInitializedAsync()
     {
         try
         {
-            speedtestResultsJson = await FirebaseService.GetSpeedtestResultsJsonAsync();
+            var (resultsDict, json, error) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                errorMessage = error;
+                Console.WriteLine($"Error occurred while retrieving speedtest results: {errorMessage}");
+            }
+            else if (resultsDict == null || resultsDict.Count == 0)
+            {
+                Console.WriteLine("No speedtest results found.");
+            }
+            else
+            {
+                speedtestResults = new List<SpeedtestResults>();
+
+                foreach (var kvp in resultsDict)
+                {
+                    speedtestResults.Add(kvp.Value);
+                }
+
+                Console.WriteLine("Speedtest results retrieved successfully.");
+            }
+
+            rawJson = json;
         }
         catch (Exception ex)
         {
             errorMessage = ex.Message;
+            Console.WriteLine($"An error occurred: {errorMessage}");
         }
     }
 }

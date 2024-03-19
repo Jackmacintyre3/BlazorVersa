@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace BlazorVersa.Data
@@ -13,16 +15,40 @@ namespace BlazorVersa.Data
             _httpClient = httpClient;
         }
 
-        public async Task<string> GetSpeedtestResultsJsonAsync()
+        public async Task<(Dictionary<string, SpeedtestResults>, string, string)> GetSpeedtestResultsAndRawDataAsync()
         {
-            var response = await _httpClient.GetAsync(".json");
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return await response.Content.ReadAsStringAsync();
+                var response = await _httpClient.GetAsync(".json");
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    var resultsDictionary = JsonSerializer.Deserialize<Dictionary<string, SpeedtestResults>>(json);
+
+                    if (resultsDictionary != null)
+                    {
+                        Console.WriteLine("JSON data parsed successfully into SpeedtestResults.");
+                        return (resultsDictionary, json, null);
+                    }
+                    else
+                    {
+                        var errorMessage = "Failed to parse JSON data into SpeedtestResults.";
+                        Console.WriteLine(errorMessage);
+                        return (null, null, errorMessage);
+                    }
+                }
+                else
+                {
+                    var errorMessage = $"Failed to fetch data from Firebase. Status code: {response.StatusCode}";
+                    Console.WriteLine(errorMessage);
+                    return (null, null, errorMessage);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                throw new Exception($"Failed to fetch data from Firebase. Status code: {response.StatusCode}");
+                var errorMessage = $"An error occurred while fetching data from Firebase: {ex.Message}";
+                Console.WriteLine(errorMessage);
+                return (null, null, errorMessage);
             }
         }
     }
