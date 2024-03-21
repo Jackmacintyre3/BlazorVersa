@@ -2,74 +2,55 @@
 @using BlazorVersa.Data
 @inject FirebaseService FirebaseService
 
-<h3>Speedtest Results</h3>
-
-@if (speedtestResults != null && speedtestResults.Count > 0)
-{
-    @foreach (var result in speedtestResults)
-    {
-        <div>
-            <p>Upload Speed: @result.upload_speed</p>
-            <p>Download Speed: @result.download_speed</p>
-            <p>Ping Speed: @result.ping_speed</p>
-            <p>Timestamp: @result.timestamp</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="text-center mb-4">Welcome to VersaNet</h1>
+            <p class="lead text-center">Your go-to platform for monitoring and analyzing internet speed.</p>
+            <div class="text-center">
+                <a href="/dashboard" class="btn btn-primary btn-lg">View Dashboard</a>
+                <a href="/settings" class="btn btn-secondary btn-lg ms-2">Settings</a>
+            </div>
+            <hr class="my-5">
+            <h2 class="text-center mb-4">Why Choose VersaNet?</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Easy to Use</h5>
+                            <p class="card-text">VersaNet provides a simple and intuitive interface to monitor your internet speed effortlessly.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Powerful Graphs</h5>
+                            <p class="card-text">Visualize your speed test results over time with interactive and insightful graphs.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Reliable Data</h5>
+                            <p class="card-text">VersaNet fetches and displays accurate speed test data from reliable sources.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h5 class="card-title">Customizable Settings</h5>
+                            <p class="card-text">Adjust settings according to your preferences for a personalized experience.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    }
-}
-else if (!string.IsNullOrEmpty(errorMessage))
-{
-    <p>Error occurred: @errorMessage</p>
-}
-else
-{
-    <p>No speedtest results found.</p>
-}
+    </div>
+</div>
 
-@if (!string.IsNullOrEmpty(rawJson))
-{
-    <h4>Raw JSON Data</h4>
-    <pre>@rawJson</pre>
-}
 
-@code {
-    private List<SpeedtestResults> speedtestResults;
-
-    private string errorMessage;
-    private string rawJson;
-
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            var (resultsDict, json, error) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
-
-            if (!string.IsNullOrEmpty(error))
-            {
-                errorMessage = error;
-                Console.WriteLine($"Error occurred while retrieving speedtest results: {errorMessage}");
-            }
-            else if (resultsDict == null || resultsDict.Count == 0)
-            {
-                Console.WriteLine("No speedtest results found.");
-            }
-            else
-            {
-                speedtestResults = new List<SpeedtestResults>();
-
-                foreach (var kvp in resultsDict)
-                {
-                    speedtestResults.Add(kvp.Value);
-                }
-
-                Console.WriteLine("Speedtest results retrieved successfully.");
-            }
-
-            rawJson = json;
-        }
-        catch (Exception ex)
-        {
-            errorMessage = ex.Message;
-            Console.WriteLine($"An error occurred: {errorMessage}");
-        }
-    }
-}

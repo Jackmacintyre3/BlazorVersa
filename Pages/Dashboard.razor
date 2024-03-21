@@ -1,0 +1,287 @@
+﻿@page "/dashboard"
+@using BlazorVersa.Data
+@using ApexCharts
+@inject FirebaseService FirebaseService
+
+<div class="navbar">
+    <button @onclick="(() => CurrentGraph = GraphType.UploadSpeed)" class="@((CurrentGraph == GraphType.UploadSpeed) ? "active" : "")">Upload Speed</button>
+    <button @onclick="(() => CurrentGraph = GraphType.DownloadSpeed)" class="@((CurrentGraph == GraphType.DownloadSpeed) ? "active" : "")">Download Speed</button>
+    <button @onclick="(() => CurrentGraph = GraphType.PingSpeed)" class="@((CurrentGraph == GraphType.PingSpeed) ? "active" : "")">Ping Speed</button>
+    <select @onchange="ChangeInterval">
+        <option value="Daily">Daily</option>
+        <option value="Weekly">Weekly</option>
+        <option value="Monthly">Monthly</option>
+        <option value="Yearly">Yearly</option>
+    </select>
+</div>
+
+@if (CurrentGraph == GraphType.UploadSpeed)
+{
+    @if (SelectedInterval == "Daily")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Upload Speed (Daily)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredUploadSpeedData"
+                             Name="Upload Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.upload_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Weekly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Upload Speed (Weekly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredUploadSpeedData"
+                             Name="Upload Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.upload_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Monthly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Upload Speed (Monthly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredUploadSpeedData"
+                             Name="Upload Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.upload_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Yearly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Upload Speed (Yearly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredUploadSpeedData"
+                             Name="Upload Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.upload_speed)" />
+        </ApexChart>
+    }
+}
+else if (CurrentGraph == GraphType.DownloadSpeed)
+{
+    @if (SelectedInterval == "Daily")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Download Speed (Daily)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredDownloadSpeedData"
+                             Name="Download Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.download_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Weekly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Download Speed (Weekly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredDownloadSpeedData"
+                             Name="Download Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.download_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Monthly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Download Speed (Monthly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredDownloadSpeedData"
+                             Name="Download Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.download_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Yearly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Download Speed (Yearly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredDownloadSpeedData"
+                             Name="Download Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.download_speed)" />
+        </ApexChart>
+    }       }
+else if (CurrentGraph == GraphType.PingSpeed)
+{
+    @if (SelectedInterval == "Daily")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Ping Speed (Daily)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredPingSpeedData"
+                             Name="Ping Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.ping_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Weekly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Ping Speed (Weekly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredPingSpeedData"
+                             Name="Ping Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.ping_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Monthly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Ping Speed (Monthly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredPingSpeedData"
+                             Name="Ping Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.ping_speed)" />
+        </ApexChart>
+    }
+    else if (SelectedInterval == "Yearly")
+    {
+        <ApexChart TItem="SpeedtestResults"
+                   Title="Ping Speed (Yearly)">
+            <ApexPointSeries TItem="SpeedtestResults"
+                             Items="FilteredPingSpeedData"
+                             Name="Ping Speed"
+                             SeriesType="SeriesType.Line"
+                             XValue="e => FormatTimestamp(e.timestamp)"
+                             YValue="e => (decimal?)ParseSpeedValue(e.ping_speed)" />
+        </ApexChart>
+    }       }
+
+@code {
+    private List<SpeedtestResults> SpeedtestData { get; set; } = new();
+    private List<SpeedtestResults> FilteredUploadSpeedData { get; set; } = new();
+    private List<SpeedtestResults> FilteredDownloadSpeedData { get; set; } = new();
+    private List<SpeedtestResults> FilteredPingSpeedData { get; set; } = new();
+    private GraphType CurrentGraph { get; set; } = GraphType.UploadSpeed;
+    private string SelectedInterval { get; set; } = "Daily";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var (resultsDictionary, _, _) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
+
+        if (resultsDictionary != null)
+        {
+            SpeedtestData = resultsDictionary.Values.ToList();
+            FilterData();
+        }
+        else
+        {
+            // Handle error or no data scenario
+        }
+    }
+
+    private void FilterData()
+    {
+        // Filter data based on selected interval
+        if (SelectedInterval == "Weekly")
+        {
+            // Filter weekly data
+            var today = DateTime.UtcNow.Date;
+            var lastWeek = today.AddDays(-7);
+            FilteredUploadSpeedData = FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList();
+            FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList();
+            FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList();
+        }
+        else if (SelectedInterval == "Monthly")
+        {
+            // Filter monthly data
+            var today = DateTime.UtcNow.Date;
+            var lastMonth = today.AddMonths(-1);
+            FilteredUploadSpeedData = FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList();
+            FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList();
+            FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList();
+        }
+        else if (SelectedInterval == "Yearly")
+        {
+            // Filter yearly data
+            var today = DateTime.UtcNow.Date;
+            var lastYear = today.AddYears(-1);
+            FilteredUploadSpeedData = FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList();
+            FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList();
+            FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList();
+        }
+        else
+        {
+            // Filter daily data (default)
+            var today = DateTime.UtcNow.Date;
+            FilteredUploadSpeedData = FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date == today).ToList();
+            FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date == today).ToList();
+            FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date == today).ToList();
+        }
+    }
+
+    private List<SpeedtestResults> FilterDataBySpeedType(string speedType)
+    {
+        // Filter out data points with empty or invalid speed values
+        return SpeedtestData.Where(d => !string.IsNullOrEmpty(d.timestamp.ToString()) &&
+                                         !string.IsNullOrEmpty(GetSpeedValue(d, speedType))).ToList();
+    }
+
+    private string GetSpeedValue(SpeedtestResults result, string speedType)
+    {
+        switch (speedType)
+        {
+            case "upload_speed":
+                return result.upload_speed;
+            case "download_speed":
+                return result.download_speed;
+            case "ping_speed":
+                return result.ping_speed;
+            default:
+                return null;
+        }
+    }
+
+    private decimal ParseSpeedValue(string speed)
+    {
+        if (!string.IsNullOrEmpty(speed))
+        {
+            decimal parsedSpeed;
+            if (decimal.TryParse(speed, out parsedSpeed))
+            {
+                return parsedSpeed;
+            }
+        }
+        // Default value if parsing fails or speed is empty
+        return 0m; // Change this to another suitable default value
+    }
+
+    private string FormatTimestamp(DateTime timestamp)
+    {
+        return timestamp.ToString("yyyy-MM-dd HH:mm:ss");
+    }
+
+    private void ChangeInterval(ChangeEventArgs e)
+    {
+        SelectedInterval = e.Value.ToString();
+        FilterData();
+        StateHasChanged(); // Re-render the component after the selection change
+    }
+
+    private enum GraphType
+    {
+        UploadSpeed,
+        DownloadSpeed,
+        PingSpeed
+    }
+}
