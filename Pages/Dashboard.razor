@@ -3,16 +3,54 @@
 @using ApexCharts
 @inject FirebaseService FirebaseService
 
-<div class="navbar">
-    <button @onclick="(() => CurrentGraph = GraphType.UploadSpeed)" class="@((CurrentGraph == GraphType.UploadSpeed) ? "active" : "")">Upload Speed</button>
-    <button @onclick="(() => CurrentGraph = GraphType.DownloadSpeed)" class="@((CurrentGraph == GraphType.DownloadSpeed) ? "active" : "")">Download Speed</button>
-    <button @onclick="(() => CurrentGraph = GraphType.PingSpeed)" class="@((CurrentGraph == GraphType.PingSpeed) ? "active" : "")">Ping Speed</button>
-    <select @onchange="ChangeInterval">
-        <option value="Daily">Daily</option>
-        <option value="Weekly">Weekly</option>
-        <option value="Monthly">Monthly</option>
-        <option value="Yearly">Yearly</option>
-    </select>
+<div class="container">
+    <div class="row mt-3">
+        <div class="col">
+            <p class="text-center">
+                <strong>Filter Date Range:</strong> @GetFilterDateRange()
+            </p>
+        </div>
+    </div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <button @onclick="(() => CurrentGraph = GraphType.UploadSpeed)"
+                                class="nav-link btn @((CurrentGraph == GraphType.UploadSpeed) ? "btn-primary" : "btn-outline-primary") mb-2">
+                            Upload Speed
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button @onclick="(() => CurrentGraph = GraphType.DownloadSpeed)"
+                                class="nav-link btn @((CurrentGraph == GraphType.DownloadSpeed) ? "btn-primary" : "btn-outline-primary") mb-2">
+                            Download Speed
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button @onclick="(() => CurrentGraph = GraphType.PingSpeed)"
+                                class="nav-link btn @((CurrentGraph == GraphType.PingSpeed) ? "btn-primary" : "btn-outline-primary") mb-2">
+                            Ping Speed
+                        </button>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <select class="form-select" @onchange="ChangeInterval">
+                            <option value="Daily">Daily</option>
+                            <option value="Weekly">Weekly</option>
+                            <option value="Monthly">Monthly</option>
+                            <option value="Yearly">Yearly</option>
+                        </select>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 </div>
 
 @if (CurrentGraph == GraphType.UploadSpeed)
@@ -195,30 +233,30 @@ else if (CurrentGraph == GraphType.PingSpeed)
         // Filter data based on selected interval
         if (SelectedInterval == "Weekly")
         {
-            // Filter weekly data
+            // Filter and average weekly data
             var today = DateTime.UtcNow.Date;
             var lastWeek = today.AddDays(-7);
-            FilteredUploadSpeedData = FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList();
-            FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList();
-            FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList();
+            FilteredUploadSpeedData = AverageData(FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList());
+            FilteredDownloadSpeedData = AverageData(FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList());
+            FilteredPingSpeedData = AverageData(FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastWeek && d.timestamp.Date <= today).ToList());
         }
         else if (SelectedInterval == "Monthly")
         {
-            // Filter monthly data
+            // Filter and average monthly data
             var today = DateTime.UtcNow.Date;
             var lastMonth = today.AddMonths(-1);
-            FilteredUploadSpeedData = FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList();
-            FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList();
-            FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList();
+            FilteredUploadSpeedData = AverageData(FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList());
+            FilteredDownloadSpeedData = AverageData(FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList());
+            FilteredPingSpeedData = AverageData(FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastMonth && d.timestamp.Date <= today).ToList());
         }
         else if (SelectedInterval == "Yearly")
         {
-            // Filter yearly data
+            // Filter and average yearly data
             var today = DateTime.UtcNow.Date;
             var lastYear = today.AddYears(-1);
-            FilteredUploadSpeedData = FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList();
-            FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList();
-            FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList();
+            FilteredUploadSpeedData = AverageData(FilterDataBySpeedType("upload_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList());
+            FilteredDownloadSpeedData = AverageData(FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList());
+            FilteredPingSpeedData = AverageData(FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date >= lastYear && d.timestamp.Date <= today).ToList());
         }
         else
         {
@@ -228,6 +266,33 @@ else if (CurrentGraph == GraphType.PingSpeed)
             FilteredDownloadSpeedData = FilterDataBySpeedType("download_speed").Where(d => d.timestamp.Date == today).ToList();
             FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date == today).ToList();
         }
+
+        // Round the filtered data to two decimal places
+        FilteredUploadSpeedData.ForEach(d => d.upload_speed = RoundToTwoDecimalPlaces(decimal.TryParse(d.upload_speed, out var value) ? value : 0m).ToString());
+        FilteredDownloadSpeedData.ForEach(d => d.download_speed = RoundToTwoDecimalPlaces(decimal.TryParse(d.download_speed, out var value) ? value : 0m).ToString());
+        FilteredPingSpeedData.ForEach(d => d.ping_speed = RoundToTwoDecimalPlaces(decimal.TryParse(d.ping_speed, out var value) ? value : 0m).ToString());
+    }
+
+
+    private List<SpeedtestResults> AverageData(List<SpeedtestResults> data)
+    {
+        var averagedData = new List<SpeedtestResults>();
+
+        for (int i = 0; i < data.Count; i += 4) // Assuming 4 data points every hour
+        {
+            var subset = data.Skip(i).Take(4);
+            var average = new SpeedtestResults
+                {
+                    timestamp = subset.First().timestamp, // Assuming timestamp is the same for each subset
+                    upload_speed = subset.Average(d => decimal.TryParse(d.upload_speed, out var value) ? value : 0m).ToString(),
+                    download_speed = subset.Average(d => decimal.TryParse(d.download_speed, out var value) ? value : 0m).ToString(),
+                    ping_speed = subset.Average(d => decimal.TryParse(d.ping_speed, out var value) ? value : 0m).ToString()
+                };
+
+            averagedData.Add(average);
+        }
+
+        return averagedData;
     }
 
     private List<SpeedtestResults> FilterDataBySpeedType(string speedType)
@@ -278,6 +343,59 @@ else if (CurrentGraph == GraphType.PingSpeed)
         StateHasChanged(); // Re-render the component after the selection change
     }
 
+    private decimal RoundToTwoDecimalPlaces(decimal value)
+    {
+        return Math.Round(value, 2);
+    }
+
+    private string GetFilterDateRange()
+    {
+        DateTime startDate;
+        DateTime endDate;
+
+        switch (SelectedInterval)
+        {
+            case "Weekly":
+                startDate = DateTime.UtcNow.Date.AddDays(-7);
+                endDate = DateTime.UtcNow.Date;
+                break;
+            case "Monthly":
+                startDate = DateTime.UtcNow.Date.AddMonths(-1);
+                endDate = DateTime.UtcNow.Date;
+                break;
+            case "Yearly":
+                startDate = DateTime.UtcNow.Date.AddYears(-1);
+                endDate = DateTime.UtcNow.Date;
+                break;
+            default: // Daily
+                startDate = DateTime.UtcNow.Date;
+                endDate = DateTime.UtcNow.Date;
+                break;
+        }
+
+        return $"{startDate.Day}{GetOrdinalSuffix(startDate.Day)} {startDate:MMMM yyyy} - {endDate.Day}{GetOrdinalSuffix(endDate.Day)} {endDate:MMMM yyyy}";
+    }
+
+    private string GetOrdinalSuffix(int day)
+    {
+        if (day >= 11 && day <= 13)
+        {
+            return "th";
+        }
+
+        switch (day % 10)
+        {
+            case 1:
+                return "st";
+            case 2:
+                return "nd";
+            case 3:
+                return "rd";
+            default:
+                return "th";
+        }
+    }
+
     private enum GraphType
     {
         UploadSpeed,
@@ -285,3 +403,4 @@ else if (CurrentGraph == GraphType.PingSpeed)
         PingSpeed
     }
 }
+
