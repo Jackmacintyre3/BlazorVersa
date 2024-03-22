@@ -3,8 +3,8 @@
 @using ApexCharts
 @inject FirebaseService FirebaseService
 
-<div class="container">
-    <div class="row mt-3">
+<div class="container mt-4">
+    <div class="row">
         <div class="col">
             <p class="text-center">
                 <strong>Filter Date Range:</strong> @GetFilterDateRange()
@@ -57,13 +57,15 @@
 {
     @if (SelectedInterval == "Daily")
     {
-        <ApexChart TItem="SpeedtestResults"
-                   Title="Upload Speed (Daily)">
-            <ApexPointSeries TItem="SpeedtestResults"
-                             Items="FilteredUploadSpeedData"
-                             Name="Upload Speed"
-                             SeriesType="SeriesType.Line"
-                             XValue="e => FormatTimestamp(e.timestamp)"
+    <ApexChart TItem="SpeedtestResults"
+               Title="@((CurrentGraph == GraphType.UploadSpeed ? "Upload" : CurrentGraph == GraphType.DownloadSpeed ? "Download" : "Ping") + " Speed (" + SelectedInterval + ")")">
+        <ApexPointSeries TItem="SpeedtestResults"
+                         Items="@(CurrentGraph == GraphType.UploadSpeed ? FilteredUploadSpeedData :
+                                  CurrentGraph == GraphType.DownloadSpeed ? FilteredDownloadSpeedData :
+                                  FilteredPingSpeedData)"
+                         Name="@((CurrentGraph == GraphType.UploadSpeed ? "Upload" : CurrentGraph == GraphType.DownloadSpeed ? "Download" : "Ping") + " Speed")"
+                         SeriesType="SeriesType.Line"
+                         XValue="e => FormatTimestamp(e.timestamp)"
                              YValue="e => (decimal?)ParseSpeedValue(e.upload_speed)" />
         </ApexChart>
     }
@@ -220,12 +222,41 @@ else if (CurrentGraph == GraphType.PingSpeed)
         if (resultsDictionary != null)
         {
             SpeedtestData = resultsDictionary.Values.ToList();
-            FilterData();
+            CurrentGraph = GraphType.UploadSpeed; // Set default graph type to Upload Speed
+            SelectedInterval = "Daily"; // Set default interval to Daily
+            FilterData(); // Filter and process the data
+            ChangeInterval(new ChangeEventArgs { Value = SelectedInterval }); // Trigger graph update
         }
         else
         {
             // Handle error or no data scenario
         }
+    }
+
+    private List<DateTime> CalculateTimestamps(List<DateTime> timestamps, int maxPoints)
+    {
+        List<DateTime> result = new List<DateTime>();
+        int dataPointCount = timestamps.Count;
+
+        if (dataPointCount <= maxPoints)
+        {
+            // If there are fewer data points than the maximum allowed, use all timestamps
+            result.AddRange(timestamps);
+        }
+        else
+        {
+            // Calculate the step size to skip timestamps
+            double stepSize = (double)dataPointCount / maxPoints;
+
+            // Add timestamps based on the step size
+            for (int i = 0; i < maxPoints; i++)
+            {
+                int index = (int)Math.Round(i * stepSize);
+                result.Add(timestamps[index]);
+            }
+        }
+
+        return result;
     }
 
     private void FilterData()
@@ -267,18 +298,31 @@ else if (CurrentGraph == GraphType.PingSpeed)
             FilteredPingSpeedData = FilterDataBySpeedType("ping_speed").Where(d => d.timestamp.Date == today).ToList();
         }
 
+        // Calculate timestamps based on the number of data points you want to display
+        int maxPoints = 10; // Change this value as needed
+        List<DateTime> uploadTimestamps = GetTimestampsForHourBlocks(FilteredUploadSpeedData, maxPoints);
+        List<DateTime> downloadTimestamps = GetTimestampsForHourBlocks(FilteredDownloadSpeedData, maxPoints);
+        List<DateTime> pingTimestamps = GetTimestampsForHourBlocks(FilteredPingSpeedData, maxPoints);
+
         // Round the filtered data to two decimal places
         FilteredUploadSpeedData.ForEach(d => d.upload_speed = RoundToTwoDecimalPlaces(decimal.TryParse(d.upload_speed, out var value) ? value : 0m).ToString());
         FilteredDownloadSpeedData.ForEach(d => d.download_speed = RoundToTwoDecimalPlaces(decimal.TryParse(d.download_speed, out var value) ? value : 0m).ToString());
         FilteredPingSpeedData.ForEach(d => d.ping_speed = RoundToTwoDecimalPlaces(decimal.TryParse(d.ping_speed, out var value) ? value : 0m).ToString());
     }
 
+    private List<DateTime> GetTimestampsForHourBlocks(List<SpeedtestResults> data, int maxPoints)
+    {
+        List<DateTime> timestamps = data.Select(d => d.timestamp).Distinct().OrderBy(t => t).ToList();
+        return CalculateTimestamps(timestamps, maxPoints);
+    }
+
+
 
     private List<SpeedtestResults> AverageData(List<SpeedtestResults> data)
     {
         var averagedData = new List<SpeedtestResults>();
 
-        for (int i = 0; i < data.Count; i += 4) // Assuming 4 data points every hour
+        for (int i = 0; i < data.Count; i += 4) 
         {
             var subset = data.Skip(i).Take(4);
             var average = new SpeedtestResults
@@ -331,9 +375,10 @@ else if (CurrentGraph == GraphType.PingSpeed)
         return 0m; // Change this to another suitable default value
     }
 
+    
     private string FormatTimestamp(DateTime timestamp)
     {
-        return timestamp.ToString("yyyy-MM-dd HH:mm:ss");
+        return timestamp.ToString("HH:mm");
     }
 
     private void ChangeInterval(ChangeEventArgs e)

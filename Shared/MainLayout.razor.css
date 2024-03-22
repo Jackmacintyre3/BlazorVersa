@@ -1,17 +1,22 @@
+/* Page layout */
 .page {
     position: relative;
     display: flex;
     flex-direction: column;
 }
 
+/* Main content */
 main {
     flex: 1;
 }
 
+/* Sidebar */
 .sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    background-image: linear-gradient(180deg, #051D59 0%, #3a0647 70%);
+    color: #fff; /* Text color for sidebar */
 }
 
+/* Top row */
 .top-row {
     background-color: #f7f7f7;
     border-bottom: 1px solid #d6d5d5;
@@ -21,21 +26,27 @@ main {
     align-items: center;
 }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
+    .top-row a,
+    .top-row .btn-link {
         white-space: nowrap;
         margin-left: 1.5rem;
         text-decoration: none;
+        color: #333; /* Adjust the color as per your design */
+        transition: color 0.3s; /* Smooth color transition */
     }
 
-    .top-row ::deep a:hover, .top-row ::deep .btn-link:hover {
-        text-decoration: underline;
-    }
+        .top-row a:hover,
+        .top-row .btn-link:hover {
+            text-decoration: underline;
+            color: #000; /* Hover color */
+        }
 
-    .top-row ::deep a:first-child {
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+        .top-row a:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
+/* Responsive styling */
 @media (max-width: 640.98px) {
     .top-row:not(.auth) {
         display: none;
@@ -45,12 +56,14 @@ main {
         justify-content: space-between;
     }
 
-    .top-row ::deep a, .top-row ::deep .btn-link {
+    .top-row a,
+    .top-row .btn-link {
         margin-left: 0;
     }
 }
 
 @media (min-width: 641px) {
+    /* Adjustments for larger screens */
     .page {
         flex-direction: row;
     }
@@ -68,7 +81,9 @@ main {
         z-index: 1;
     }
 
-    .top-row, article {
+    /* Additional padding for top-row and main content */
+    .top-row,
+    article {
         padding-left: 2rem !important;
         padding-right: 1.5rem !important;
     }
