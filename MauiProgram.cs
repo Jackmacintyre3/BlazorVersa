@@ -6,6 +6,7 @@ using Microsoft.Maui.Controls.Xaml;
 using Microsoft.Maui.Hosting;
 using System;
 using System.Net.Http;
+using MudBlazor.Services;
 
 namespace BlazorVersa
 {
@@ -36,6 +37,7 @@ namespace BlazorVersa
 
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddSingleton<FirebaseService>();
+            builder.Services.AddMudServices();
 
 
 

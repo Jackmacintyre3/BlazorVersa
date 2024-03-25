@@ -2,12 +2,14 @@
 @using BlazorVersa.Data
 @using ApexCharts
 @inject FirebaseService FirebaseService
+<link rel="stylesheet" href="Dashboard.css" />
+
 
 <div class="container mt-4">
     <div class="row">
         <div class="col">
             <p class="text-center">
-                <strong>Filter Date Range:</strong> @GetFilterDateRange()
+                <strong>Date Range:</strong> @GetFilterDateRange()
             </p>
         </div>
     </div>
@@ -21,19 +23,19 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
                         <button @onclick="(() => CurrentGraph = GraphType.UploadSpeed)"
-                                class="nav-link btn @((CurrentGraph == GraphType.UploadSpeed) ? "btn-primary" : "btn-outline-primary") mb-2">
+                                class="nav-link btn @((CurrentGraph == GraphType.UploadSpeed) ? "btn-tertiary" : "btn-outline-tertiary") mb-2">
                             Upload Speed
                         </button>
                     </li>
                     <li class="nav-item">
                         <button @onclick="(() => CurrentGraph = GraphType.DownloadSpeed)"
-                                class="nav-link btn @((CurrentGraph == GraphType.DownloadSpeed) ? "btn-primary" : "btn-outline-primary") mb-2">
+                                class="nav-link btn @((CurrentGraph == GraphType.DownloadSpeed) ? "btn-tertiary" : "btn-outline-tertiary") mb-2">
                             Download Speed
                         </button>
                     </li>
                     <li class="nav-item">
                         <button @onclick="(() => CurrentGraph = GraphType.PingSpeed)"
-                                class="nav-link btn @((CurrentGraph == GraphType.PingSpeed) ? "btn-primary" : "btn-outline-primary") mb-2">
+                                class="nav-link btn @((CurrentGraph == GraphType.PingSpeed) ? "btn-tertiary" : "btn-outline-tertiary") mb-2">
                             Ping Speed
                         </button>
                     </li>
@@ -57,6 +59,8 @@
 {
     @if (SelectedInterval == "Daily")
     {
+     <div class="chart-container" id="upload-chart">
+
     <ApexChart TItem="SpeedtestResults"
                Title="@((CurrentGraph == GraphType.UploadSpeed ? "Upload" : CurrentGraph == GraphType.DownloadSpeed ? "Download" : "Ping") + " Speed (" + SelectedInterval + ")")">
         <ApexPointSeries TItem="SpeedtestResults"
@@ -68,6 +72,7 @@
                          XValue="e => FormatTimestamp(e.timestamp)"
                              YValue="e => (decimal?)ParseSpeedValue(e.upload_speed)" />
         </ApexChart>
+        </div>
     }
     else if (SelectedInterval == "Weekly")
     {
@@ -448,4 +453,3 @@ else if (CurrentGraph == GraphType.PingSpeed)
         PingSpeed
     }
 }
-

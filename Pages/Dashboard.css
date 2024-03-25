@@ -1,0 +1,13 @@
+﻿@media (max-width: 768px) {
+    /* Add your mobile-specific styles here */
+    .chart-container {
+        min-height: 300px; /* Default height for chart container on mobile */
+    }
+}
+
+/* Additional CSS rules for wider screens can go here */
+@media (min-width: 769px) {
+    .chart-container {
+        min-height: initial; /* Revert to default height for wider screens */
+    }
+}

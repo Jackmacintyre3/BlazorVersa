@@ -1,70 +1,103 @@
 ﻿@page "/history"
 @using BlazorVersa.Data
+@using MudBlazor
 @inject FirebaseService FirebaseService
 
-@if (latestResult != null)
-{
-    <div class="card">
-        <div class="card-header">
-            <h5 class="card-title">Latest Speedtest Results</h5>
-            <p class="card-text">Time: @latestResult.timestamp.ToString("HH:mm dd/MM/yyyy")</p>
-        </div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">Upload Speed: @latestResult.upload_speed Mbps</li>
-                <li class="list-group-item">Download Speed: @latestResult.download_speed Mbps</li>
-                <li class="list-group-item">Ping Speed: @latestResult.ping_speed ms</li>
-            </ul>
-        </div>
-    </div>
-}
-else if (!string.IsNullOrEmpty(errorMessage))
-{
-    <div class="alert alert-danger mt-4" role="alert">
-        Error occurred: @errorMessage
-    </div>
-}
-@* else
-{
-    <div class="alert alert-info mt-4" role="alert">
-        No speedtest results found.
-    </div>
-} *@
+<style>
+    .page-container {
+        padding: 20px;
+        max-width: 100%;
+    }
 
-@code {
-    private SpeedtestResults latestResult;
+    .mud-table-striped tbody tr:nth-child(odd) {
+        background-color: blue;
+    }
 
-    private string errorMessage;
-    private string rawJson;
+    .mud-table-hover tbody tr:hover {
+        background-color: #e2e6ea;
+    }
+
+    .mud-table-bordered th,
+    .mud-table-bordered td {
+        border: 1px solid #dee2e6;
+    }
+
+    .flex-container {
+        display: flex;
+        align-items: center;
+    }
+
+    .search-field {
+        margin-left: auto;
+    }
+
+</style>
+
+<MudContainer Class="page-container">
+    <div class="flex-container">
+        <MudText Typo="Typo.h6">Speed Test Results</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="search-field mt-0"></MudTextField>
+    </div>
+    <MudTable Items="@SpeedtestResultsList" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<SpeedtestResults,bool>(FilterFunc)">
+        <HeaderContent>
+            <MudTh>Timestamp</MudTh>
+            <MudTh>Upload Speed</MudTh>
+            <MudTh>Download Speed</MudTh>
+            <MudTh>Ping Speed</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Timestamp">@context.timestamp</MudTd>
+                <MudTd DataLabel="Upload Speed">@context.upload_speed</MudTd>
+                <MudTd DataLabel="Download Speed">@context.download_speed</MudTd>
+                <MudTd DataLabel="Ping Speed">@context.ping_speed</MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager />
+            </PagerContent>
+        </MudTable>
+    </MudContainer>
+
+    @code {
+    private bool dense = true;
+    private bool hover = true;
+    private bool striped = true;
+    private bool bordered = true;
+    private string searchString = "";
+
+    private List<SpeedtestResults> SpeedtestResultsList = new List<SpeedtestResults>();
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var (resultsDict, json, error) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
+        await LoadData();
+    }
 
-            if (!string.IsNullOrEmpty(error))
-            {
-                errorMessage = error;
-                Console.WriteLine($"Error occurred while retrieving speedtest results: {errorMessage}");
-            }
-            else if (resultsDict == null || resultsDict.Count == 0)
-            {
-                Console.WriteLine("No speedtest results found.");
-            }
-            else
-            {
-                // Get the latest result
-                latestResult = resultsDict.Values.OrderByDescending(r => r.timestamp).FirstOrDefault();
-                Console.WriteLine("Latest speedtest result retrieved successfully.");
-            }
-
-            rawJson = json;
-        }
-        catch (Exception ex)
+    private async Task LoadData()
+    {
+        var (resultsDictionary, _, errorMessage) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
+        if (resultsDictionary != null)
         {
-            errorMessage = ex.Message;
-            Console.WriteLine($"An error occurred: {errorMessage}");
+            SpeedtestResultsList = resultsDictionary.Values.ToList();
         }
+        else
+        {
+            // Handle error
+            Console.WriteLine($"Failed to fetch speedtest results: {errorMessage}");
+        }
+    }
+
+    private bool FilterFunc(SpeedtestResults result)
+    {
+        if (string.IsNullOrWhiteSpace(searchString))
+            return true;
+        if (result.timestamp.ToString().Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (result.upload_speed.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (result.download_speed.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        if (result.ping_speed.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+        return false;
     }
 }

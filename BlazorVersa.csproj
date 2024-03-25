@@ -55,6 +55,7 @@
         <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
         <PackageReference Include="Firebase.Database" Version="1.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+        <PackageReference Include="MudBlazor" Version="6.19.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
