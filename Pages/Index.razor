@@ -9,9 +9,33 @@
             <p class="lead text-center">Your go-to platform for monitoring and analyzing internet speed.</p>
             <div class="text-center">
                 <a href="/dashboard" class="btn btn-primary btn-lg">View Dashboard</a>
-                <a href="/settings" class="btn btn-secondary btn-lg ms-2">Settings</a>
             </div>
             <hr class="my-5">
+        </div>
+    </div>
+</div>
+
+<MudCarousel Class="mud-width-full" Style="height:200px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
+    <MudCarouselItem Transition="transition" Color="@Color.Primary">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition" Color="@Color.Secondary">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+    <MudCarouselItem Transition="transition">
+        <div class="d-flex" style="height:100%">
+            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
+        </div>
+    </MudCarouselItem>
+</MudCarousel>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
             <h2 class="text-center mb-4">Why Choose VersaNet?</h2>
             <div class="row">
                 <div class="col-md-6">
@@ -53,4 +77,10 @@
     </div>
 </div>
 
-
+@code {
+    private bool arrows = true;
+    private bool bullets = true;
+    private bool enableSwipeGesture = true;
+    private bool autocycle = true;
+    private Transition transition = Transition.Slide;
+}

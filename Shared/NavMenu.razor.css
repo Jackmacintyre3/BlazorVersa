@@ -1,15 +1,33 @@
-.navbar-toggler {
-    background-color: rgba(44, 62, 80, 0.6); /* Adjusted background color to match the background gradient */
+.nav-menu {
+    background: #2c3e50 !important; 
 }
 
+    .nav-menu nav .nav-link {
+        color: white;
+    }
+
+        .nav-menu nav .nav-link.active,
+        .nav-menu nav .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
 .top-row {
-    height: 3.5rem;
-    background-color: rgba(0, 0, 0, 0.4); /* Adjusted background color to match the background gradient */
+    height: auto; 
+    background-color: rgba(0, 0, 0, 0.4);
+    padding-bottom: 0px; 
 }
 
 .navbar-brand {
     font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    padding-bottom: 0px; 
 }
+
+    .navbar-brand img {
+        margin-right: 5px;
+    }
 
 .oi {
     width: 2rem;
@@ -23,32 +41,32 @@
     padding-bottom: 0.5rem;
 }
 
-.nav-item:first-of-type {
-    padding-top: 1rem;
-}
+    .nav-item:first-of-type {
+        padding-top: 1rem;
+    }
 
-.nav-item:last-of-type {
-    padding-bottom: 1rem;
-}
+    .nav-item:last-of-type {
+        padding-bottom: 1rem;
+    }
 
-.nav-item ::deep a {
-    color: #d7d7d7;
-    border-radius: 4px;
-    height: 3rem;
-    display: flex;
-    align-items: center;
-    line-height: 3rem;
-}
+    .nav-item ::deep a {
+        color: #d7d7d7;
+        border-radius: 4px;
+        height: 3rem;
+        display: flex;
+        align-items: center;
+        line-height: 3rem;
+    }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255, 255, 255, 0.25);
-    color: white;
-}
+        .nav-item ::deep a.active {
+            background-color: rgba(255, 255, 255, 0.25);
+            color: white;
+        }
 
-.nav-item ::deep a:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-}
+        .nav-item ::deep a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
 
 @media (min-width: 641px) {
     .navbar-toggler {
@@ -56,7 +74,6 @@
     }
 
     .collapse {
-        /* Never collapse the sidebar for wide screens */
         display: block;
     }
 }

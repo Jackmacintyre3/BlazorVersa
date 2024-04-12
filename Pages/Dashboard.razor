@@ -227,14 +227,13 @@ else if (CurrentGraph == GraphType.PingSpeed)
         if (resultsDictionary != null)
         {
             SpeedtestData = resultsDictionary.Values.ToList();
-            CurrentGraph = GraphType.UploadSpeed; // Set default graph type to Upload Speed
-            SelectedInterval = "Daily"; // Set default interval to Daily
-            FilterData(); // Filter and process the data
-            ChangeInterval(new ChangeEventArgs { Value = SelectedInterval }); // Trigger graph update
+            CurrentGraph = GraphType.UploadSpeed;
+            SelectedInterval = "Daily";
+            FilterData();
+            StateHasChanged();
         }
         else
         {
-            // Handle error or no data scenario
         }
     }
 
