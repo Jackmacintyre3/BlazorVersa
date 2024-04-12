@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using BlazorVersa.Data
 @inject FirebaseService FirebaseService
+@inject IEmailService EmailService
 
 <div class="container">
     <div class="row">
@@ -14,6 +15,9 @@
         </div>
     </div>
 </div>
+
+<button class="btn btn-primary" @onclick="SendTestEmail">Send Test Email</button>
+
 
 <MudCarousel Class="mud-width-full" Style="height:200px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
     <MudCarouselItem Transition="transition" Color="@Color.Primary">
@@ -83,4 +87,27 @@
     private bool enableSwipeGesture = true;
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
+
+    private async Task SendTestEmail()
+    {
+        var subject = "Welcome to VersaNet";
+        var message = @"
+<html>
+    <body style='font-family: Arial, sans-serif; color: #333;'>
+        <h1 style='color: #0056b3;'>Welcome to VersaNet</h1>
+        <p>Thank you for choosing VersaNet, your reliable tool for monitoring and analyzing internet speed!</p>
+        <h2>Why Choose VersaNet?</h2>
+        <ul>
+            <li><strong>Easy to Use:</strong> VersaNet provides a simple and intuitive interface to monitor your internet speed effortlessly.</li>
+            <li><strong>Powerful Graphs:</strong> Visualize your speed test results over time with interactive and insightful graphs.</li>
+            <li><strong>Reliable Data:</strong> We fetch and display accurate speed test data from reliable sources.</li>
+            <li><strong>Customizable Settings:</strong> Adjust settings according to your preferences for a personalized experience.</li>
+        </ul>
+        <p>Thank you for using VersaNet!</p>
+    </body>
+</html>";
+        await EmailService.SendEmailAsync("jackmacintyre3@gmail.com", subject, message); 
+    }
+
+
 }
