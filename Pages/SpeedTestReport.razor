@@ -1,0 +1,159 @@
+﻿@page "/speed-test-report"
+@using BlazorVersa.Data
+@inject FirebaseService FirebaseService
+@inject IEmailService EmailService
+
+<div class="container">
+    <div class="row my-3">
+        <div class="col-lg-12">
+            <div class="input-group" style="width: 95%;">
+                <input type="email" class="form-control" placeholder="Recipient's email" @bind="recipientEmail" style="margin-right: 10px;">
+                <button class="btn btn-outline-secondary" type="button" @onclick="UpdateRecipientEmail">Update Email</button>
+            </div>
+            @if (confirmationMessage != null)
+            {
+                <div class="alert alert-success" role="alert">
+                    @confirmationMessage
+                </div>
+            }
+            <button class="btn btn-primary btn-lg my-2" @onclick="GenerateAndSendReport" style="width: auto;">Generate and Send Report</button>
+            @if (reportSentMessage != null)
+            {
+                <div class="alert alert-info" role="alert">
+                    @reportSentMessage
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="row my-5">
+        <div class="col-lg-12">
+            <div class="d-flex flex-column align-items-start" style="width: 95%;">
+                @foreach (var card in cardData)
+                {
+                    <div class="card mb-3" style="width: 95%;">
+                        <div class="card-body d-flex align-items-center">
+                            <div style="flex-grow: 1;">
+                                <h5 class="card-title">@card.Title</h5>
+                                <input type="text" class="form-control" value="@card.IPAddress" readonly>
+                            </div>
+                            <img src="@card.ImagePath" alt="@card.Title" class="img-fluid ml-3" style="max-width: 50px; height: auto;">
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    private string recipientEmail = "jackmacintyre3@gmail.com";
+    private string confirmationMessage;
+    private string reportSentMessage;
+
+    private List<CardInfo> cardData = new List<CardInfo>
+    {
+        new CardInfo { Title = "Pi Hole", IPAddress = "192.168.1.190", ImagePath = "/images/pi_hole.png" },
+        new CardInfo { Title = "Open Media Vault", IPAddress = "192.168.1.189", ImagePath = "/images/omv.png" },
+        new CardInfo { Title = "Uptime Kuma", IPAddress = "192.168.1.124:3001", ImagePath = "/images/kuma.svg" },
+        new CardInfo { Title = "Eir", IPAddress = "192.168.1.254", ImagePath = "/images/eir.png" },
+        new CardInfo { Title = "Plex", IPAddress = "192.168.1.189:32400", ImagePath = "/images/plex.jpg" }
+    };
+
+    private async Task UpdateRecipientEmail()
+    {
+        confirmationMessage = $"Recipient email updated to: {recipientEmail}";
+        await Task.Delay(3000);
+        confirmationMessage = null;
+    }
+
+    private async Task GenerateAndSendReport()
+    {
+        var (resultsDictionary, _, error) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
+        if (error != null)
+        {
+            reportSentMessage = $"Error generating report: {error}";
+        }
+        else if (resultsDictionary != null)
+        {
+            var (downloadAverage, uploadAverage, pingAverage) = CalculateDailyAverages(resultsDictionary);
+            await SendReportEmail(downloadAverage, uploadAverage, pingAverage);
+            reportSentMessage = "Report has been sent successfully.";
+        }
+        await Task.Delay(3000);
+        reportSentMessage = null;
+    }
+
+    private (double downloadAverage, double uploadAverage, double pingAverage) CalculateDailyAverages(Dictionary<string, SpeedtestResults> resultsDictionary)
+    {
+        double totalDownloadSpeed = 0.0, totalUploadSpeed = 0.0, totalPing = 0.0;
+        int count = 0;
+        var today = DateTime.Today;
+
+        foreach (var entry in resultsDictionary)
+        {
+            if (entry.Value.timestamp.Date == today)
+            {
+                if (double.TryParse(entry.Value.download_speed, out double downloadSpeed))
+                {
+                    totalDownloadSpeed += downloadSpeed;
+                }
+                if (double.TryParse(entry.Value.upload_speed, out double uploadSpeed))
+                {
+                    totalUploadSpeed += uploadSpeed;
+                }
+                if (double.TryParse(entry.Value.ping_speed, out double pingSpeed))
+                {
+                    totalPing += pingSpeed;
+                }
+                count++;
+            }
+        }
+
+        return (totalDownloadSpeed / count, totalUploadSpeed / count, totalPing / count);
+    }
+
+    private async Task SendReportEmail(double downloadAverage, double uploadAverage, double pingAverage)
+    {
+        string formattedDate = DateTime.Now.ToString("dd'th of' MMMM yyyy").Replace("th of", GetDaySuffix(DateTime.Now.Day) + " of");
+        string subject = $"Speed Test Averages Report for {formattedDate}";
+        string htmlContent = $@"
+<html>
+    <body>
+        <div class='email-container'>
+            <div class='header'>
+                <img src='https://i.imgur.com/yhM0mtc.png' alt='VersaNet Logo' height='90' width='90'>
+            </div>
+            <div class='content-block'>
+                <h1>Speed Test Averages</h1>
+                <p><strong>Date:</strong> {formattedDate}</p>
+                <p><strong>Average Download Speed:</strong> {downloadAverage:F2} Mbps</p>
+                <p><strong>Average Upload Speed:</strong> {uploadAverage:F2} Mbps</p>
+                <p><strong>Average Ping:</strong> {pingAverage:F2} ms</p>
+            </div>
+            <div class='footer'>
+                <p>Thank you for using VersaNet.</p>
+            </div>
+        </div>
+    </body>
+</html>";
+        await EmailService.SendEmailAsync(recipientEmail, subject, htmlContent);
+    }
+
+    private string GetDaySuffix(int day)
+    {
+        return day switch
+        {
+            1 or 21 or 31 => "st",
+            2 or 22 => "nd",
+            3 or 23 => "rd",
+            _ => "th"
+        };
+    }
+
+    public class CardInfo
+    {
+        public string Title { get; set; }
+        public string IPAddress { get; set; }
+        public string ImagePath { get; set; }
+    }
+}
