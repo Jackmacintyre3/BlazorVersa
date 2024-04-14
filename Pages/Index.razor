@@ -3,73 +3,123 @@
 @inject FirebaseService FirebaseService
 @inject IEmailService EmailService
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
             <h1 class="text-center mb-4">Welcome to VersaNet</h1>
-            <p class="lead text-center">Your go-to platform for monitoring and analyzing internet speed.</p>
-            <div class="text-center">
-                <a href="/dashboard" class="btn btn-primary btn-lg">View Dashboard</a>
+            <p class="lead text-center">Next-level internet speed monitoring and analysis at your fingertips.</p>
+            <div class="text-center my-4">
+                @if (latestResults != null)
+                {
+                    <div class="bg-light p-3 rounded shadow-sm">
+                        <h2>Latest Speed Test Results</h2>
+                        <p>Upload: @latestResults.upload_speed Mbps</p>
+                        <p>Download: @latestResults.download_speed Mbps</p>
+                        <p>Ping: @latestResults.ping_speed ms</p>
+                    </div>
+                }
+                else
+                {
+                    <p>Loading latest results...</p>
+                }
             </div>
-            <hr class="my-5">
+            <div class="text-center mb-5">
+                <a href="/dashboard" class="btn btn-primary btn-lg">Explore Dashboard</a>
+            </div>
         </div>
     </div>
 </div>
 
-<MudCarousel Class="mud-width-full" Style="height:200px;" ShowArrows="@arrows" ShowBullets="@bullets" EnableSwipeGesture="@enableSwipeGesture" AutoCycle="@autocycle" TData="object">
-    <MudCarouselItem Transition="transition" Color="@Color.Primary">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition" Color="@Color.Secondary">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-    <MudCarouselItem Transition="transition">
-        <div class="d-flex" style="height:100%">
-            <MudIcon Class="mx-auto my-auto" Icon="@Icons.Custom.Brands.MudBlazor" Color="@Color.Primary" Size="@Size.Large" />
-        </div>
-    </MudCarouselItem>
-</MudCarousel>
-
-<div class="container">
+<div class="container mt-4">
     <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <h2 class="text-center mb-4">Why Choose VersaNet?</h2>
+        <div class="col-md-10 offset-md-1">
+            <h2 class="text-center mb-3">Why Choose VersaNet?</h2>
             <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Easy to Use</h5>
-                            <p class="card-text">VersaNet provides a simple and intuitive interface to monitor your internet speed effortlessly.</p>
+                            <h5 class="card-title">Ease of Use</h5>
+                            <p class="card-text">Simple, intuitive interface for effortless speed monitoring.</p>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card mb-4">
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
                         <div class="card-body">
-                            <h5 class="card-title">Powerful Graphs</h5>
-                            <p class="card-text">Visualize your speed test results over time with interactive and insightful graphs.</p>
+                            <h5 class="card-title">Powerful Analytics</h5>
+                            <p class="card-text">Comprehensive graphs to track your speed tests over time.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Reliable Data</h5>
+                            <p class="card-text">Accurate, dependable test results with cutting-edge technology.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">Customizable Options</h5>
+                            <p class="card-text">Flexible settings to enhance your user experience.</p>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="card mb-4">
+        </div>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <h3 class="text-center mb-3">Client Testimonials</h3>
+            <div id="testimonialsCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <p class="text-center">"VersaNet has revolutionized how we monitor our internet speeds at the office. Highly recommended!" - John Doe, IT Manager</p>
+                    </div>
+                    <div class="carousel-item">
+                        <p class="text-center">"Reliable and easy to use, VersaNet provides all the data we need to keep our network optimized." - Jane Smith, Network Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-md-10 offset-md-1">
+            <h4 class="text-center mb-4">Frequently Asked Questions</h4>
+            <div class="accordion" id="faqAccordion">
+                <div class="card">
+                    <div class="card-header" id="headingOne">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                What is VersaNet?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#faqAccordion">
                         <div class="card-body">
-                            <h5 class="card-title">Reliable Data</h5>
-                            <p class="card-text">VersaNet fetches and displays accurate speed test data from reliable sources.</p>
+                            VersaNet is a comprehensive tool for monitoring and analyzing your internet connection speeds.
                         </div>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="card mb-4">
+                <div class="card">
+                    <div class="card-header" id="headingTwo">
+                        <h5 class="mb-0">
+                            <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                How do I use VersaNet?
+                            </button>
+                        </h5>
+                    </div>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#faqAccordion">
                         <div class="card-body">
-                            <h5 class="card-title">Customizable Settings</h5>
-                            <p class="card-text">Adjust settings according to your preferences for a personalized experience.</p>
+                            Simply log in to the dashboard to start monitoring your internet speed in real-time.
                         </div>
                     </div>
                 </div>
@@ -84,5 +134,23 @@
     private bool enableSwipeGesture = true;
     private bool autocycle = true;
     private Transition transition = Transition.Slide;
+    private SpeedtestResults latestResults;
 
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadLatestResults();
+    }
+
+    private async Task LoadLatestResults()
+    {
+        var (resultsDictionary, _, errorMessage) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
+        if (errorMessage == null && resultsDictionary != null)
+        {
+            latestResults = resultsDictionary.Values.OrderByDescending(r => r.timestamp).FirstOrDefault();
+        }
+        else
+        {
+            Console.Error.WriteLine(errorMessage ?? "Error fetching results.");
+        }
+    }
 }
