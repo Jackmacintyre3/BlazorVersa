@@ -74,6 +74,7 @@
     <ItemGroup>
         <PackageReference Include="AntDesign.Charts" Version="0.5.1" />
         <PackageReference Include="Blazor-ApexCharts" Version="3.1.0" />
+        <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
         <PackageReference Include="ChartJs.Blazor" Version="1.1.0" />
         <PackageReference Include="Firebase.Database" Version="1.0.0" />
         <PackageReference Include="MailKit" Version="4.4.0" />

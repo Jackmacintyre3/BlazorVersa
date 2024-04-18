@@ -28,18 +28,16 @@ namespace BlazorVersa
             builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-            // Register HttpClient
             builder.Services.AddSingleton(new HttpClient
             {
                 BaseAddress = new Uri("https://maui-d3f73-default-rtdb.europe-west1.firebasedatabase.app/")
-                // Add any necessary headers here
             });
 
             builder.Services.AddSingleton<WeatherForecastService>();
             builder.Services.AddSingleton<FirebaseService>();
             builder.Services.AddMudServices();
             builder.Services.AddSingleton<IEmailService, EmailService>();
-
+            builder.Services.AddSingleton<FileService>();
 
             return builder.Build();
         }

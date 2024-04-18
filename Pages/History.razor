@@ -42,23 +42,23 @@
     <MudTable Items="@SpeedtestResultsList" Dense="@dense" Hover="@hover" Bordered="@bordered" Striped="@striped" Filter="new Func<SpeedtestResults,bool>(FilterFunc)">
         <HeaderContent>
             <MudTh>Timestamp</MudTh>
-            <MudTh>Upload Speed</MudTh>
-            <MudTh>Download Speed</MudTh>
-            <MudTh>Ping Speed</MudTh>
+            <MudTh>Upload Speed (Mbps)</MudTh>
+            <MudTh>Download Speed (Mbps)</MudTh>
+            <MudTh>Ping (ms)</MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="Timestamp">@context.timestamp</MudTd>
-                <MudTd DataLabel="Upload Speed">@context.upload_speed</MudTd>
-                <MudTd DataLabel="Download Speed">@context.download_speed</MudTd>
-                <MudTd DataLabel="Ping Speed">@context.ping_speed</MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
-    </MudContainer>
+            <MudTd DataLabel="Timestamp">@context.timestamp.ToString("g")</MudTd>
+                <MudTd DataLabel="Upload Speed">@context.upload_speed Mbps</MudTd>
+            <MudTd DataLabel="Download Speed">@context.download_speed Mbps</MudTd>
+            <MudTd DataLabel="Ping Speed">@context.ping_speed ms</MudTd>
+        </RowTemplate>
+        <PagerContent>
+            <MudTablePager />
+        </PagerContent>
+    </MudTable>
+</MudContainer>
 
-    @code {
+@code {
     private bool dense = true;
     private bool hover = true;
     private bool striped = true;
@@ -81,7 +81,6 @@
         }
         else
         {
-            // Handle error
             Console.WriteLine($"Failed to fetch speedtest results: {errorMessage}");
         }
     }
