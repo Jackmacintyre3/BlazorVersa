@@ -9,7 +9,7 @@
             <h1 class="text-center mb-3 display-4">Welcome to VersaNet</h1>
             <p class="lead text-center mb-5">Explore real-time monitoring and analysis of your internet speeds.</p>
 
-            @if (latestResults != null)
+            @if (IsValidResults(latestResults))
             {
                 <div class="mb-5">
                     <div class="bg-white border rounded shadow-sm p-4 text-center">
@@ -19,12 +19,14 @@
                         <p class="font-weight-bold ">Ping: <span class="text-dark">@latestResults.ping_speed ms</span></p>
                     </div>
                 </div>
+
+
             }
             else
             {
-                <div class="text-center">
-                    <p>Loading latest results...</p>
-                </div>
+                 <div class="text-center">
+                    <p>No valid results available.</p>
+                </div> 
             }
 
             <div class="text-center mb-5">
@@ -39,6 +41,7 @@
     .bg-white {
         background-color: #fff !important;
     }
+
     .font-weight-bold {
         font-weight: bold !important;
     }
@@ -57,11 +60,19 @@
         var (resultsDictionary, _, errorMessage) = await FirebaseService.GetSpeedtestResultsAndRawDataAsync();
         if (errorMessage == null && resultsDictionary != null)
         {
-            latestResults = resultsDictionary.Values.OrderByDescending(r => r.timestamp).FirstOrDefault();
+            latestResults = resultsDictionary.Values.OrderByDescending(r => r.timestamp).FirstOrDefault(r => IsValidResults(r));
         }
         else
         {
             Console.Error.WriteLine(errorMessage ?? "Error fetching results.");
         }
+    }
+
+    private bool IsValidResults(SpeedtestResults results)
+    {
+        return results != null &&
+               double.TryParse(results.upload_speed, out double upload) && upload > 0 &&
+               double.TryParse(results.download_speed, out double download) && download > 0 &&
+               double.TryParse(results.ping_speed, out double ping) && ping > 0;
     }
 }

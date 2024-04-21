@@ -8,12 +8,18 @@
         <div class="col-lg-12">
             <div class="input-group" style="width: 95%;">
                 <input type="email" class="form-control" placeholder="Recipient's email" @bind="recipientEmail" style="margin-right: 10px;">
-                <button class="btn btn-outline-secondary" type="button" @onclick="UpdateRecipientEmail">Update Email</button>
+                <button class="btn btn-outline-secondary" type="button" @onclick="ValidateAndUpdateEmail">Update Email</button>
             </div>
             @if (confirmationMessage != null)
             {
                 <div class="alert alert-success" role="alert">
                     @confirmationMessage
+                </div>
+            }
+            @if (errorMessage != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @errorMessage
                 </div>
             }
             <button class="btn btn-primary btn-lg my-2" @onclick="GenerateAndSendReport" style="width: auto;">Generate and Send Report</button>
@@ -48,6 +54,7 @@
 @code {
     private string recipientEmail = "jackmacintyre3@gmail.com";
     private string confirmationMessage;
+    private string errorMessage;
     private string reportSentMessage;
 
     private List<CardInfo> cardData = new List<CardInfo>
@@ -156,5 +163,35 @@
         public string Title { get; set; }
         public string IPAddress { get; set; }
         public string ImagePath { get; set; }
+    }
+
+    private async Task ValidateAndUpdateEmail()
+    {
+        if (IsValidEmail(recipientEmail))
+        {
+            confirmationMessage = $"Recipient email updated to: {recipientEmail}";
+            errorMessage = null;
+            await Task.Delay(3000);
+            confirmationMessage = null;
+        }
+        else
+        {
+            errorMessage = "Invalid email format. Please enter a valid email address.";
+            await Task.Delay(3000);
+            errorMessage = null;
+        }
+    }
+
+    private bool IsValidEmail(string email)
+    {
+        try
+        {
+            var addr = new System.Net.Mail.MailAddress(email);
+            return addr.Address == email;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }

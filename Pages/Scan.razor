@@ -1,4 +1,4 @@
-﻿@page "/statistics"
+﻿@page "/scan"
 @using BlazorVersa.Data
 @using System.Text.Json
 @using MudBlazor
@@ -25,16 +25,28 @@
     .flex-container {
         display: flex;
         align-items: center;
+        justify-content: space-between;
     }
 
     .search-field {
         margin-left: auto;
     }
+
+    .header-info {
+        padding: 10px;
+        background-color: #f4f4f4;
+        border-radius: 4px;
+        margin-bottom: 20px;
+        font-size: 1.1em;
+        text-align: center;
+        justify-content: center;
+    }
 </style>
 
 <MudContainer Class="page-container">
-    <div class="flex-container">
-        <MudText Typo="Typo.h6">Devices in the Network</MudText>
+    <div class="header-info">
+        <strong>ARP Scan Results</strong><br>
+        Interface: eth0, MAC: b8:27:eb:d0:52:69, IPv4: 192.168.1.192
     </div>
     <MudTable Items="devices" Dense="true" Hover="true" Bordered="true" Striped="true">
         <HeaderContent>

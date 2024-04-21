@@ -1,0 +1,180 @@
+﻿{
+  "timestamp": "2024-04-17T23:14:45.000Z",
+  "devices": [
+    {
+      "ip": "192.168.1.1",
+      "mac": "00:23:b6:08:b5:85",
+      "vendor": "SECURITE COMMUNICATIONS / HONEYWELL"
+    },
+    {
+      "ip": "192.168.1.4",
+      "mac": "68:57:2d:bd:f3:98",
+      "vendor": "HANGZHOU AIXIANGJI TECHNOLOGY CO., LTD"
+    },
+    {
+      "ip": "192.168.1.7",
+      "mac": "24:4c:e3:5f:6f:a8",
+      "vendor": "Amazon Technologies Inc."
+    },
+    {
+      "ip": "192.168.1.8",
+      "mac": "90:2b:d2:1c:41:f9",
+      "vendor": "HUAWEI TECHNOLOGIES CO.,LTD"
+    },
+    {
+      "ip": "192.168.1.9",
+      "mac": "5c:41:5a:3c:74:0f",
+      "vendor": "Amazon.com, LLC"
+    },
+    {
+      "ip": "192.168.1.19",
+      "mac": "f8:54:b8:b1:fd:42",
+      "vendor": "Amazon Technologies Inc."
+    },
+    {
+      "ip": "192.168.1.24",
+      "mac": "fc:65:de:c9:32:fc",
+      "vendor": "Amazon Technologies Inc."
+    },
+    {
+      "ip": "192.168.1.31",
+      "mac": "40:16:3b:c0:a1:29",
+      "vendor": "Samsung Electronics Co.,Ltd"
+    },
+    {
+      "ip": "192.168.1.44",
+      "mac": "00:22:61:7a:a5:1c",
+      "vendor": "Frontier Silicon Ltd"
+    },
+    {
+      "ip": "192.168.1.47",
+      "mac": "d4:a6:51:68:51:b0",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.53",
+      "mac": "9e:18:e1:86:69:a9",
+      "vendor": "(Unknown: locally administered)"
+    },
+    {
+      "ip": "192.168.1.54",
+      "mac": "9e:31:c3:c3:75:8a",
+      "vendor": "(Unknown: locally administered)"
+    },
+    {
+      "ip": "192.168.1.55",
+      "mac": "9e:31:c3:09:ec:41",
+      "vendor": "(Unknown: locally administered)"
+    },
+    {
+      "ip": "192.168.1.62",
+      "mac": "4c:3b:df:a2:1b:c0",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.107",
+      "mac": "2c:71:ff:52:cc:93",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.109",
+      "mac": "24:e8:53:d8:ef:cc",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.114",
+      "mac": "50:3e:aa:df:90:32",
+      "vendor": "TP-LINK TECHNOLOGIES CO.,LTD."
+    },
+    {
+      "ip": "192.168.1.116",
+      "mac": "a4:d7:3c:04:e8:83",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.124",
+      "mac": "b8:27:eb:44:82:a2",
+      "vendor": "Raspberry Pi Foundation"
+    },
+    {
+      "ip": "192.168.1.137",
+      "mac": "48:e1:e9:3f:fb:70",
+      "vendor": "Chengdu Meross Technology Co., Ltd."
+    },
+    {
+      "ip": "192.168.1.143",
+      "mac": "48:e1:e9:81:f4:c6",
+      "vendor": "Chengdu Meross Technology Co., Ltd."
+    },
+    {
+      "ip": "192.168.1.144",
+      "mac": "48:e1:e9:81:f6:0b",
+      "vendor": "Chengdu Meross Technology Co., Ltd."
+    },
+    {
+      "ip": "192.168.1.147",
+      "mac": "8a:a3:c4:da:53:59",
+      "vendor": "(Unknown: locally administered)"
+    },
+    {
+      "ip": "192.168.1.154",
+      "mac": "a0:d7:f3:56:ff:c8",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.159",
+      "mac": "34:3e:a4:d9:a0:48",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.161",
+      "mac": "02:df:e5:fd:b0:7b",
+      "vendor": "(Unknown: locally administered)"
+    },
+    {
+      "ip": "192.168.1.179",
+      "mac": "68:6c:e6:07:c3:53",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.180",
+      "mac": "a4:e5:7c:2a:fb:05",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.184",
+      "mac": "04:6c:59:7b:71:e0",
+      "vendor": "(Unknown)"
+    },
+    {
+      "ip": "192.168.1.187",
+      "mac": "ea:5c:50:b1:2f:fe",
+      "vendor": "(Unknown: locally administered)"
+    },
+    {
+      "ip": "192.168.1.188",
+      "mac": "38:94:ed:15:33:c7",
+      "vendor": "NETGEAR"
+    },
+    {
+      "ip": "192.168.1.189",
+      "mac": "b8:27:eb:89:f0:52",
+      "vendor": "Raspberry Pi Foundation"
+    },
+    {
+      "ip": "192.168.1.190",
+      "mac": "dc:a6:32:66:4f:e3",
+      "vendor": "Raspberry Pi Trading Ltd"
+    },
+    {
+      "ip": "192.168.1.197",
+      "mac": "c2:28:b9:1f:34:d9",
+      "vendor": "(Unknown: locally administered)"
+    },
+    {
+      "ip": "192.168.1.254",
+      "mac": "5c:b1:3e:90:41:ac",
+      "vendor": "Sagemcom Broadband SAS"
+    }
+  ]
+}
