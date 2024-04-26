@@ -38,6 +38,7 @@ namespace BlazorVersa
             builder.Services.AddMudServices();
             builder.Services.AddSingleton<IEmailService, EmailService>();
             builder.Services.AddSingleton<FileService>();
+            builder.Services.AddSingleton<ConnectivityService>();
 
             return builder.Build();
         }

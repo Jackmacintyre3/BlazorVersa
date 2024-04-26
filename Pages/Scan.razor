@@ -44,26 +44,40 @@
 </style>
 
 <MudContainer Class="page-container">
-    <div class="header-info">
-        <strong>ARP Scan Results</strong><br>
-        Interface: eth0, MAC: b8:27:eb:d0:52:69, IPv4: 192.168.1.192
-    </div>
-    <MudTable Items="devices" Dense="true" Hover="true" Bordered="true" Striped="true">
-        <HeaderContent>
-            <MudTh>IP Address</MudTh>
-            <MudTh>MAC Address</MudTh>
-            <MudTh>Vendor</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="IP Address">@context.Ip</MudTd>
-                <MudTd DataLabel="MAC Address">@context.Mac</MudTd>
-                <MudTd DataLabel="Vendor">@context.Vendor</MudTd>
-            </RowTemplate>
-        </MudTable>
-    </MudContainer>
+    @if (isLoading)
+    {
+        <MudProgressCircular Indeterminate="true" />
+    }
+    else if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <MudAlert Severity="Severity.Error">@errorMessage</MudAlert>
+    }
+    else
+    {
+        <div class="header-info">
+            <strong>ARP Scan Results</strong><br>
+            Interface: eth0, type: EN10MB, MAC: b8:27:eb:d0:52:69, IPv4: 192.168.1.192
+        </div>
+        <MudTable Items="devices" Dense="true" Hover="true" Bordered="true" Striped="true">
+            <HeaderContent>
+                <MudTh>IP Address</MudTh>
+                <MudTh>MAC Address</MudTh>
+                <MudTh>Vendor</MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="IP Address">@context.Ip</MudTd>
+                    <MudTd DataLabel="MAC Address">@context.Mac</MudTd>
+                    <MudTd DataLabel="Vendor">@context.Vendor</MudTd>
+                </RowTemplate>
+            </MudTable> 
 
-    @code {
+    }
+</MudContainer>
+
+@code {
     private List<ScanResults> devices = new List<ScanResults>();
+    private bool isLoading = true;
+    private string errorMessage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -72,15 +86,35 @@
 
     private async Task LoadDevicesAsync()
     {
-        string filePath = @"C:\Users\Jack\OneDrive - Atlantic TU\Desktop\BlazorVersa\Resources\results.json";
-        if (System.IO.File.Exists(filePath))
+        try
         {
-            var jsonString = await System.IO.File.ReadAllTextAsync(filePath);
-            var rootObject = JsonSerializer.Deserialize<RootObject>(jsonString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-            if (rootObject?.Devices != null)
+            isLoading = true;
+            string filePath = @"C:\Users\Jack\OneDrive - Atlantic TU\Desktop\BlazorVersa\Resources\results.json";
+            if (System.IO.File.Exists(filePath))
             {
-                devices = rootObject.Devices;
+                var jsonString = await System.IO.File.ReadAllTextAsync(filePath);
+                var rootObject = JsonSerializer.Deserialize<RootObject>(jsonString, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                if (rootObject?.Devices != null && rootObject.Devices.Any())
+                {
+                    devices = rootObject.Devices;
+                }
+                else
+                {
+                    throw new InvalidOperationException("No valid results available.");
+                }
             }
+            else
+            {
+                throw new FileNotFoundException("The data source file was not found.");
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
         }
     }
 }

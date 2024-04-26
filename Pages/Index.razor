@@ -2,12 +2,31 @@
 @using BlazorVersa.Data
 @inject FirebaseService FirebaseService
 @inject IEmailService EmailService
+@inject ConnectivityService ConnectivityService
+@implements IDisposable
 
 <div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <h1 class="text-center mb-3 display-4">Welcome to VersaNet</h1>
             <p class="lead text-center mb-5">Explore real-time monitoring and analysis of your internet speeds.</p>
+
+            @if (isConnected)
+            {
+                <div style="color: #000000; padding: 10px; text-align: center;">
+                    <span>Internet Connection: </span>
+                    <span style="height: 15px; width: 15px; background-color: #4CAF50; border-radius: 50%; display: inline-block;"></span>
+                    <span> Online</span>
+                </div>
+            }
+            else
+            {
+                <div style="color: #000000; padding: 10px; text-align: center;">
+                    <span>Internet Connection: </span>
+                    <span style="height: 15px; width: 15px; background-color: #f44336; border-radius: 50%; display: inline-block;"></span>
+                    <span> Offline</span>
+                </div>
+            }
 
             @if (IsValidResults(latestResults))
             {
@@ -19,14 +38,12 @@
                         <p class="font-weight-bold ">Ping: <span class="text-dark">@latestResults.ping_speed ms</span></p>
                     </div>
                 </div>
-
-
             }
             else
             {
-                 <div class="text-center">
+                <div class="text-center">
                     <p>No valid results available.</p>
-                </div> 
+                </div>
             }
 
             <div class="text-center mb-5">
@@ -48,11 +65,14 @@
 </style>
 
 @code {
+    private bool isConnected;
     private SpeedtestResults latestResults;
 
     protected override async Task OnInitializedAsync()
     {
+        isConnected = ConnectivityService.IsConnected;
         await LoadLatestResults();
+        ConnectivityService.ConnectivityChanged += UpdateConnectivityStatus;
     }
 
     private async Task LoadLatestResults()
@@ -62,10 +82,6 @@
         {
             latestResults = resultsDictionary.Values.OrderByDescending(r => r.timestamp).FirstOrDefault(r => IsValidResults(r));
         }
-        else
-        {
-            Console.Error.WriteLine(errorMessage ?? "Error fetching results.");
-        }
     }
 
     private bool IsValidResults(SpeedtestResults results)
@@ -74,5 +90,16 @@
                double.TryParse(results.upload_speed, out double upload) && upload > 0 &&
                double.TryParse(results.download_speed, out double download) && download > 0 &&
                double.TryParse(results.ping_speed, out double ping) && ping > 0;
+    }
+
+    private void UpdateConnectivityStatus(bool status)
+    {
+        isConnected = status;
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        ConnectivityService.ConnectivityChanged -= UpdateConnectivityStatus;
     }
 }
